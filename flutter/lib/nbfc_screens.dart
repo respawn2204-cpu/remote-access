@@ -230,6 +230,14 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 20),
+          Center(
+            child: Text(
+              'Customer ID: ${gFFI.serverModel.serverId.text.replaceAll(' ', '')}',
+              style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
+            ),
+          ),
+          const SizedBox(height: 8),
         ],
       ),
     );
