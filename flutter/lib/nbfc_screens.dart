@@ -92,19 +92,23 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Namaste,',
-                    style: TextStyle(fontSize: 18, color: Color(0xFFF59E0B)),
-                  ),
-                  Text(
-                    'Welcome to Bharat Gold',
-                    style: context.themeText('headlineMedium'),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Namaste,',
+                      style: TextStyle(fontSize: 18, color: Color(0xFFF59E0B)),
+                    ),
+                    Text(
+                      'Welcome to Bharat Gold',
+                      style: context.themeText('headlineMedium'),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 12),
               const CircleAvatar(
                 backgroundColor: Color(0xFF3B82F6),
                 child: Icon(Icons.person, color: Colors.white),
