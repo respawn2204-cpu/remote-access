@@ -110,7 +110,7 @@ class HomePageState extends State<HomePage> {
         ],
       );
     }
-    return Text(bind.mainGetAppNameSync());
+    return Text("Bharat Gold");
   }
 }
 
@@ -126,7 +126,7 @@ class WebHomePage extends StatelessWidget {
       // backgroundColor: MyTheme.grayBg,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("${bind.mainGetAppNameSync()} (Preview)"),
+        title: Text("Bharat Gold"),
         actions: connectionPage.appBarActions,
       ),
       body: connectionPage,
