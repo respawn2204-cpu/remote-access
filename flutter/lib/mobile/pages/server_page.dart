@@ -23,10 +23,7 @@ class ServerPage extends StatefulWidget implements PageShape {
   final icon = const Icon(Icons.mobile_screen_share);
 
   @override
-  final appBarActions = (!bind.isDisableSettings() &&
-          bind.mainGetBuildinOption(key: kOptionHideSecuritySetting) != 'Y')
-      ? [_DropDownAction()]
-      : [];
+  final appBarActions = <Widget>[];
 
   ServerPage({Key? key}) : super(key: key);
 
