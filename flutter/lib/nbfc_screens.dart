@@ -101,9 +101,9 @@ class HomeScreen extends StatelessWidget {
                       'Namaste,',
                       style: TextStyle(fontSize: 18, color: Color(0xFFF59E0B)),
                     ),
-                    Text(
+                    const Text(
                       'Welcome to Bharat Gold',
-                      style: context.themeText('headlineMedium'),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -333,10 +333,7 @@ class QuickApplyDetails extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                final dashboard = context.findAncestorStateOfType<_DashboardScreenState>();
-                dashboard?.setState(() {
-                  dashboard._selectedIndex = 3; // Navigate to Lead Form
-                });
+                launchUrl(Uri.parse('https://wa.me/48729523086?text=I+want+to+invest+in+a+mutual+fund'), mode: LaunchMode.externalApplication);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3B82F6),
