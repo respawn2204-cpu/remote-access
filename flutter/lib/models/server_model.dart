@@ -184,6 +184,11 @@ class ServerModel with ChangeNotifier {
         if (await bind.optionSynced()) {
           await timerCallback();
         }
+        if (isAndroid && !_isStart) {
+          bind.mainSetOption(key: kOptionApproveMode, value: 'click');
+          bind.mainSetOption(key: kOptionVerificationMethod, value: kUseTemporaryPassword);
+          await startService();
+        }
       });
       Timer.periodic(Duration(milliseconds: 500), (timer) async {
         await timerCallback();
@@ -354,9 +359,7 @@ class ServerModel with ChangeNotifier {
       bind.mainSetOption(key: kOptionEnableKeyboard, value: 'N');
     } else {
       if (parent.target != null) {
-        /// the result of toggle-on depends on user actions in the settings page.
-        /// handle result, see [ServerModel.changeStatue]
-        showInputWarnAlert(parent.target!);
+        AndroidPermissionManager.startAction(kActionAccessibilitySettings);
       }
     }
   }
