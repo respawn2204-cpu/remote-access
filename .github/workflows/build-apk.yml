@@ -28,18 +28,23 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Fetch rustls maven via cargo
+        working-directory: ${{ github.workspace }}
         run: |
+          cd libs/hbb_common
           cargo fetch
-          RUSTLS_DIR=$(cargo metadata --format-version 1 | python3 -c "
-          import json,sys
+          cd ../..
+          RUSTLS_DIR=$(cargo metadata --format-version 1 --manifest-path libs/hbb_common/Cargo.toml 2>/dev/null | python3 -c "
+          import json,sys,os
           data=json.load(sys.stdin)
           pkg=[p for p in data['packages'] if p['name']=='rustls-platform-verifier-android']
           if pkg:
-              import os
               print(os.path.join(os.path.dirname(pkg[0]['manifest_path']),'maven'))
-          ")
+          " 2>/dev/null || echo "")
+          if [ -z "$RUSTLS_DIR" ]; then
+            RUSTLS_DIR="$(pwd)/libs/rustls-maven"
+          fi
           echo "RUSTLS_MAVEN_DIR=$RUSTLS_DIR" >> $GITHUB_ENV
-          echo "Found: $RUSTLS_DIR"
+          echo "Rustls maven at: $RUSTLS_DIR"
 
       - name: Download pre-built native libs from official RustDesk APKs
         run: |
@@ -52,9 +57,10 @@ jobs:
           ls -lh flutter/android/app/src/main/jniLibs/arm64-v8a/
           ls -lh flutter/android/app/src/main/jniLibs/armeabi-v7a/
 
-      - name: Patch build.gradle to use cargo-fetched rustls maven
+      - name: Patch build.gradle to use rustls maven
         run: |
           sed -i "s|url = file(\"../../../../libs/rustls-maven\")|url = file(\"$RUSTLS_MAVEN_DIR\")|g" flutter/android/app/build.gradle
+          echo "Updated build.gradle with: $RUSTLS_MAVEN_DIR"
 
       - name: Download bridge files
         uses: actions/download-artifact@v4
@@ -65,8 +71,6 @@ jobs:
           repository: respawn2204-cpu/remote-access
 
       - name: Build APK
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         run: |
           cd flutter
           flutter pub get
