@@ -22,6 +22,12 @@ jobs:
           flutter-version: "3.24.5"
           channel: stable
 
+      - name: Install Rust (for cargo metadata only, no compilation)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Fetch cargo metadata
+        run: cargo metadata --format-version 1 > /dev/null
+
       - name: Download bridge files
         uses: actions/download-artifact@v4
         with:
