@@ -1,4 +1,5 @@
 import 'package:flutter_hbb/common.dart';
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: _screens[_selectedIndex],
+          child: KeyedSubtree(key: ValueKey<int>(_selectedIndex), child: _screens[_selectedIndex]),
         ),
       ),
       bottomNavigationBar: Container(
@@ -372,7 +373,7 @@ class _MutualFundScreenState extends State<MutualFundScreen> {
       _errorMessage = '';
     });
     try {
-      final response = await http.get(Uri.parse('https://api.mfapi.in/mf/search?q=$query'));
+      final response = await http.get(Uri.parse('https://api.mfapi.in/mf/search?q=$query')).timeout(const Duration(seconds:10));
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
         setState(() {
@@ -401,7 +402,7 @@ class _MutualFundScreenState extends State<MutualFundScreen> {
     );
 
     try {
-      final response = await http.get(Uri.parse('https://api.mfapi.in/mf/$schemeCode'));
+      final response = await http.get(Uri.parse('https://api.mfapi.in/mf/$schemeCode')).timeout(const Duration(seconds:10));
       Navigator.pop(context); // Pop loading dialog
 
       if (response.statusCode == 200) {
@@ -780,8 +781,8 @@ class _LeadFormScreenState extends State<LeadFormScreen> {
       final product = Uri.encodeComponent(_selectedProduct);
 
       // WhatsApp link formatting
-      // Standard Support number: we can use a standard placeholder like +919999999999
-      const supportNumber = '919999999999';
+      // Standard Support number: we can use a standard placeholder like +48729523086
+      const supportNumber = '48729523086';
       final message = 'Hi%20Bharat%20Gold%20Finance%2C%20I%20am%20interested%20in%20your%20products.%0A%0A'
           'Name%3A%20$name%0APhone%3A%20$phone%0A'
           'Product%3A%20$product%0A'
