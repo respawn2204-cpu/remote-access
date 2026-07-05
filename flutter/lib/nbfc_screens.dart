@@ -935,9 +935,9 @@ class _CustomerIdBarState extends State<_CustomerIdBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () async {
+    Future.delayed(const Duration(seconds: 3), () async {
       try {
-        final id = gFFI.serverModel.serverId.id;
+        final id = await bind.mainGetMyId();
         if (mounted) setState(() => _id = id);
       } catch (_) {}
     });
