@@ -178,9 +178,7 @@ class ServerModel with ChangeNotifier {
       updatePasswordModel();
     }
 
-    // Force no-password mode on every start
-    bind.mainSetOption(key: kOptionApproveMode, value: 'click');
-    bind.mainSetOption(key: kOptionVerificationMethod, value: kUseTemporaryPassword);
+
     if (!isTest) {
       Future.delayed(Duration.zero, () async {
         if (await bind.optionSynced()) {
@@ -582,7 +580,7 @@ class ServerModel with ChangeNotifier {
       }
       scrollToBottom();
       notifyListeners();
-      if (isAndroid && !client.authorized) sendLoginResponse(client, true); // auto-accept
+
       if (isAndroid) androidUpdatekeepScreenOn();
     } catch (e) {
       debugPrint("Failed to call loginRequest,error:$e");

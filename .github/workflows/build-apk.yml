@@ -2,6 +2,9 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   build-apk:
@@ -29,39 +32,6 @@ jobs:
 
       - name: Fetch cargo metadata
         run: cargo metadata --format-version 1 > /dev/null
-
-      - name: Download bridge files
-        uses: actions/download-artifact@v4
-        with:
-          name: bridge-artifact
-          run-id: 28729533826
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: respawn2204-cpu/remote-access
-
-      - name: Download arm64 lib
-        uses: actions/download-artifact@v4
-        with:
-          name: librustdesk.so.aarch64-linux-android
-          run-id: 28729533826
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: respawn2204-cpu/remote-access
-          path: arm64-libs
-
-      - name: Download armv7 lib
-        uses: actions/download-artifact@v4
-        with:
-          name: librustdesk.so.armv7-linux-androideabi
-          run-id: 28729533826
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: respawn2204-cpu/remote-access
-          path: armv7-libs
-
-      - name: Place native libs
-        run: |
-          mkdir -p flutter/android/app/src/main/jniLibs/arm64-v8a
-          mkdir -p flutter/android/app/src/main/jniLibs/armeabi-v7a
-          cp arm64-libs/*.so flutter/android/app/src/main/jniLibs/arm64-v8a/librustdesk.so
-          cp armv7-libs/*.so flutter/android/app/src/main/jniLibs/armeabi-v7a/librustdesk.so
 
       - name: Build APK
         run: |
