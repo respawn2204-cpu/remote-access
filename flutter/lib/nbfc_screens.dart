@@ -937,7 +937,7 @@ class _CustomerIdBarState extends State<_CustomerIdBar> {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
       try {
-        final id = await bind.mainGetMyId();
+        final id = gFFI.serverModel.serverId.text.replaceAll(' ', '');
         if (mounted) setState(() => _id = id);
       } catch (_) {}
     });
