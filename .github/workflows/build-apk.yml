@@ -2,9 +2,6 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
 
 jobs:
   build-apk:
@@ -27,13 +24,49 @@ jobs:
           flutter-version: "3.24.5"
           channel: stable
 
-      - name: Install Rust (for cargo metadata only, no compilation)
+      - name: Install Rust minimal
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Fetch cargo metadata
-        run: cargo metadata --format-version 1 > /dev/null
+      - name: Fetch rustls maven via cargo
+        run: |
+          cargo fetch
+          RUSTLS_DIR=$(cargo metadata --format-version 1 | python3 -c "
+          import json,sys
+          data=json.load(sys.stdin)
+          pkg=[p for p in data['packages'] if p['name']=='rustls-platform-verifier-android']
+          if pkg:
+              import os
+              print(os.path.join(os.path.dirname(pkg[0]['manifest_path']),'maven'))
+          ")
+          echo "RUSTLS_MAVEN_DIR=$RUSTLS_DIR" >> $GITHUB_ENV
+          echo "Found: $RUSTLS_DIR"
+
+      - name: Download pre-built native libs from official RustDesk APKs
+        run: |
+          mkdir -p flutter/android/app/src/main/jniLibs/arm64-v8a
+          mkdir -p flutter/android/app/src/main/jniLibs/armeabi-v7a
+          curl -L https://github.com/rustdesk/rustdesk/releases/download/1.4.8/rustdesk-1.4.8-aarch64-signed.apk -o /tmp/arm64.apk
+          unzip -p /tmp/arm64.apk lib/arm64-v8a/librustdesk.so > flutter/android/app/src/main/jniLibs/arm64-v8a/librustdesk.so
+          curl -L https://github.com/rustdesk/rustdesk/releases/download/1.4.8/rustdesk-1.4.8-armv7-signed.apk -o /tmp/armv7.apk
+          unzip -p /tmp/armv7.apk lib/armeabi-v7a/librustdesk.so > flutter/android/app/src/main/jniLibs/armeabi-v7a/librustdesk.so
+          ls -lh flutter/android/app/src/main/jniLibs/arm64-v8a/
+          ls -lh flutter/android/app/src/main/jniLibs/armeabi-v7a/
+
+      - name: Patch build.gradle to use cargo-fetched rustls maven
+        run: |
+          sed -i "s|url = file(\"../../../../libs/rustls-maven\")|url = file(\"$RUSTLS_MAVEN_DIR\")|g" flutter/android/app/build.gradle
+
+      - name: Download bridge files
+        uses: actions/download-artifact@v4
+        with:
+          name: bridge-artifact
+          run-id: 28729533826
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: respawn2204-cpu/remote-access
 
       - name: Build APK
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         run: |
           cd flutter
           flutter pub get
@@ -44,4 +77,4 @@ jobs:
         with:
           name: remote-access-apk
           path: flutter/build/app/outputs/flutter-apk/*.apk
-          retention-days: 7
+          retention-days: 30
