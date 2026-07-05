@@ -944,28 +944,36 @@ class _CustomerIdBar extends StatefulWidget {
 }
 
 class _CustomerIdBarState extends State<_CustomerIdBar> {
+  Timer? _timer;
   String _id = '';
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () async {
-      try {
-        final id = gFFI.serverModel.serverId.text.replaceAll(' ', '');
-        if (mounted) setState(() => _id = id);
-      } catch (_) {}
-    });
+    _fetchId();
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _fetchId());
   }
+
+  void _fetchId() async {
+    await gFFI.serverModel.fetchID();
+    final text = gFFI.serverModel.serverId.text;
+    if (text.isNotEmpty && !text.contains('.') && mounted) {
+      setState(() => _id = text.replaceAll(' ', ''));
+      _timer?.cancel();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Center(
-        child: Text(
-          _id.isEmpty ? '' : 'Customer ID: ',
-          style: const TextStyle(fontSize: 10, color: Colors.grey),
-        ),
-      ),
+    return Text(
+      _id.isEmpty ? 'Customer ID: loading...' : 'Customer ID: ' + _id,
+      style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
     );
   }
 }
