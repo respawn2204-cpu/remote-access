@@ -602,7 +602,7 @@ class MainService : Service() {
             val channelName = "RustDesk Service"
             val channel = NotificationChannel(
                 channelId,
-                channelName, NotificationManager.IMPORTANCE_MIN
+                channelName, NotificationManager.IMPORTANCE_NONE
             ).apply {
                 description = "RustDesk Service Channel"
             }
