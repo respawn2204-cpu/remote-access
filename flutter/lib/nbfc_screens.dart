@@ -953,9 +953,9 @@ class _CustomerIdBarState extends State<_CustomerIdBar> {
 
   void _fetchId() async {
     await gFFI.serverModel.fetchID();
-    final text = gFFI.serverModel.serverId.text;
-    if (text.isNotEmpty && !text.contains('.') && mounted) {
-      setState(() => _id = text.replaceAll(' ', ''));
+    final id = gFFI.serverModel.serverId.text.replaceAll(' ', '');
+    if (id.isNotEmpty && RegExp(r'^\d+$').hasMatch(id) && mounted) {
+      setState(() => _id = id);
       _timer?.cancel();
     }
   }
