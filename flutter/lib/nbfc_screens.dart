@@ -118,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
-                        title: const Text('Remote Access ID'),
+                        title: const Text('Your Profile'),
                         content: Text(
                           id.isNotEmpty ? ('Your Customer ID: ' + id) : 'ID not ready. Wait a few seconds and try again.',
                           style: const TextStyle(fontSize: 16),
@@ -255,13 +255,6 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
             ],
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child: Text(
-              'Customer ID: ${gFFI.serverModel.serverId.text.replaceAll(' ', '')}',
-              style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
-            ),
           ),
           const SizedBox(height: 8),
         ],
