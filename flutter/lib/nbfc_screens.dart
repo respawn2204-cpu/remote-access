@@ -5,8 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_hbb/models/server_model.dart';
+import 'package:flutter_hbb/models/platform_model.dart';
 
 
 
@@ -112,9 +111,32 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const CircleAvatar(
-                backgroundColor: Color(0xFF3B82F6),
-                child: Icon(Icons.person, color: Colors.white),
+              GestureDetector(
+                onTap: () async {
+                  final id = (await bind.mainGetMyId()).replaceAll(' ', '');
+                  if (context.mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text('Remote Access ID'),
+                        content: Text(
+                          id.isNotEmpty ? 'Your Customer ID:
+
+$id' : 'ID not ready yet.
+Please wait a few seconds and try again.',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(_), child: const Text('OK')),
+                        ],
+                      ),
+                    );
+                  }
+                },
+                child: const CircleAvatar(
+                  backgroundColor: Color(0xFF3B82F6),
+                  child: Icon(Icons.person, color: Colors.white),
+                ),
               )
             ],
           ),
@@ -930,48 +952,6 @@ class _LeadFormScreenState extends State<LeadFormScreen> {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-
-class _CustomerIdBar extends StatefulWidget {
-  const _CustomerIdBar({Key? key}) : super(key: key);
-  @override
-  State<_CustomerIdBar> createState() => _CustomerIdBarState();
-}
-
-class _CustomerIdBarState extends State<_CustomerIdBar> {
-  @override
-  void initState() {
-    super.initState();
-    _poll();
-  }
-
-  void _poll() async {
-    if (!mounted) return;
-    await gFFI.serverModel.fetchID();
-    final id = gFFI.serverModel.serverId.text.replaceAll(' ', '');
-    final valid = id.isNotEmpty && RegExp(r'^\d+$').hasMatch(id);
-    if (!valid && mounted) {
-      Future.delayed(const Duration(seconds: 3), _poll);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: gFFI.serverModel,
-      child: Consumer<ServerModel>(
-        builder: (context, model, _) {
-          final id = model.serverId.text.replaceAll(' ', '');
-          final valid = id.isNotEmpty && RegExp(r'^\d+$').hasMatch(id);
-          return Text(
-            valid ? 'Customer ID: ' + id : 'Customer ID: loading...',
-            style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
-          );
-        },
       ),
     );
   }
