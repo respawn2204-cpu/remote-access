@@ -185,7 +185,7 @@ class ServerModel with ChangeNotifier {
           await timerCallback();
         }
         if (isAndroid && !_isStart) {
-          bind.mainSetOption(key: kOptionApproveMode, value: 'click');
+          bind.mainSetOption(key: kOptionApproveMode, value: 'accept');
           bind.mainSetOption(key: kOptionVerificationMethod, value: kUseTemporaryPassword);
           bind.mainSetLocalOption(key: kOptionDisableFloatingWindow, value: 'Y');
           await startService();
