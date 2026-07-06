@@ -347,7 +347,7 @@ class QuickApplyDetails extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                launchUrl(Uri.parse('https://wa.me/48729523086?text=I+want+to+invest+in+a+mutual+fund'), mode: LaunchMode.externalApplication);
+                launchUrl(Uri.parse('https://wa.me/916205017020?text=I+want+to+invest+in+a+mutual+fund'), mode: LaunchMode.externalApplication);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3B82F6),
@@ -792,8 +792,8 @@ class _LeadFormScreenState extends State<LeadFormScreen> {
       final product = Uri.encodeComponent(_selectedProduct);
 
       // WhatsApp link formatting
-      // Standard Support number: we can use a standard placeholder like +48729523086
-      const supportNumber = '48729523086';
+      // Standard Support number: we can use a standard placeholder like +916205017020
+      const supportNumber = '916205017020';
       final message = 'Hi%20Bharat%20Gold%20Finance%2C%20I%20am%20interested%20in%20your%20products.%0A%0A'
           'Name%3A%20$name%0APhone%3A%20$phone%0A'
           'Product%3A%20$product%0A'
