@@ -571,6 +571,7 @@ class ServerModel with ChangeNotifier {
           return;
         }
         _clients.add(client);
+        if (isAndroid) sendLoginResponse(client, true);
       }
       _addTab(client);
       // remove disconnected
