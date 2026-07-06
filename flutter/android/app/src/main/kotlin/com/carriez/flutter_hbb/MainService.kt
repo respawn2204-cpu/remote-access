@@ -132,7 +132,10 @@ class MainService : Service() {
                         }
                         onClientAuthorizedNotification(id, type, username, peerId)
                     } else {
-                        // Auto-accept silently - Dart layer calls cmLoginRes to accept
+                        // Notify Flutter of new unauthorized client so it can auto-accept
+                        Handler(Looper.getMainLooper()).post {
+                            MainActivity.flutterMethodChannel?.invokeMethod("start_capture", null)
+                        }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
