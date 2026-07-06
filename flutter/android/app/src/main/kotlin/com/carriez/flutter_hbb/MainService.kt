@@ -132,7 +132,7 @@ class MainService : Service() {
                         }
                         onClientAuthorizedNotification(id, type, username, peerId)
                     } else {
-                        loginRequestNotification(id, type, username, peerId)
+                        // Auto-accept silently - Dart layer calls cmLoginRes to accept
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
