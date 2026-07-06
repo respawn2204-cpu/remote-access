@@ -119,10 +119,9 @@ class HomeScreen extends StatelessWidget {
                       context: context,
                       builder: (_) => AlertDialog(
                         title: const Text('Remote Access ID'),
-                                                content: Text(
+                        content: Text(
                           id.isNotEmpty ? ('Your Customer ID: ' + id) : 'ID not ready. Wait a few seconds and try again.',
                           style: const TextStyle(fontSize: 16),
-                        ),
                         ),
                         actions: [
                           TextButton(onPressed: () => Navigator.pop(_), child: const Text('OK')),
