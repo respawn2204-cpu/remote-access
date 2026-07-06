@@ -19,6 +19,40 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          title: const Text('Enable Input Control'),
+          content: const Text(
+            'To control this device remotely, you need to enable Input Control once.\n\nTap "Open Settings", find "Bharat Gold" under Installed Services and toggle it ON.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(_);
+              },
+              child: const Text('Already Enabled'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(_);
+                AndroidPermissionManager.startAction(kActionAccessibilitySettings);
+              },
+              child: const Text('Open Settings'),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   final List<Widget> _screens = [
     const HomeScreen(),
     const MutualFundScreen(),
