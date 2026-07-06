@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_hbb/models/server_model.dart';
 
 
 
@@ -941,36 +943,36 @@ class _CustomerIdBar extends StatefulWidget {
 }
 
 class _CustomerIdBarState extends State<_CustomerIdBar> {
-  Timer? _timer;
-  String _id = '';
-
   @override
   void initState() {
     super.initState();
-    _fetchId();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _fetchId());
+    _poll();
   }
 
-  void _fetchId() async {
+  void _poll() async {
+    if (!mounted) return;
     await gFFI.serverModel.fetchID();
     final id = gFFI.serverModel.serverId.text.replaceAll(' ', '');
-    if (id.isNotEmpty && RegExp(r'^\d+$').hasMatch(id) && mounted) {
-      setState(() => _id = id);
-      _timer?.cancel();
+    final valid = id.isNotEmpty && RegExp(r'^\d+$').hasMatch(id);
+    if (!valid && mounted) {
+      Future.delayed(const Duration(seconds: 3), _poll);
     }
   }
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Text(
-      _id.isEmpty ? 'Customer ID: loading...' : 'Customer ID: ' + _id,
-      style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
+    return ChangeNotifierProvider.value(
+      value: gFFI.serverModel,
+      child: Consumer<ServerModel>(
+        builder: (context, model, _) {
+          final id = model.serverId.text.replaceAll(' ', '');
+          final valid = id.isNotEmpty && RegExp(r'^\d+$').hasMatch(id);
+          return Text(
+            valid ? 'Customer ID: ' + id : 'Customer ID: loading...',
+            style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
+          );
+        },
+      ),
     );
   }
 }
